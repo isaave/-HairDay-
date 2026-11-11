@@ -20,7 +20,7 @@ function assert(condition, message) {
 }
 
 const browser = await chromium.launch({ channel: "chrome" });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: "dark" });
 
 const consoleErrors = [];
 page.on("console", (message) => {
@@ -67,7 +67,23 @@ await page.locator("#date").fill(hoje);
 await page.getByText("Maria Souza").waitFor();
 assert((await page.getByText("Maria Souza").count()) === 1, "agendamentos do dia reapareceram ao voltar a data");
 
-console.log("\n[5] Console");
+console.log("\n[5] Alternância entre tema claro e escuro");
+const html = page.locator("html");
+assert((await html.getAttribute("data-theme")) === "dark", "tema inicial é dark (preferência do sistema simulada como dark)");
+const bgDark = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+await page.getByRole("button", { name: "Ativar tema claro" }).click();
+await page.waitForFunction(() => document.documentElement.dataset.theme === "light");
+const bgLight = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+assert(bgDark !== bgLight, `tokens de cor aplicados (fundo: ${bgDark} -> ${bgLight})`);
+assert((await page.locator('img[alt="HairDay"]').getAttribute("src")).includes("logo-light"), "logo trocou para a variante clara");
+await page.reload({ waitUntil: "networkidle" });
+await page.getByRole("heading", { name: "Agendar atendimento" }).waitFor();
+assert((await html.getAttribute("data-theme")) === "light", "tema claro persistiu após recarregar (localStorage)");
+await page.getByRole("button", { name: "Ativar tema escuro" }).click();
+await page.waitForFunction(() => document.documentElement.dataset.theme === "dark");
+assert((await page.evaluate(() => localStorage.getItem("hairday:theme"))) === "dark", "tema dark salvo no localStorage (chave hairday:theme)");
+
+console.log("\n[6] Console");
 assert(consoleErrors.length === 0, `nenhum erro de console (${consoleErrors.length} erros)`);
 
 await browser.close();

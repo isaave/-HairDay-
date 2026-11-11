@@ -19,7 +19,7 @@ HairDay is a Single Page Application (SPA) for managing appointments at a hair s
 
 ## Design Reference
 - Figma file: https://www.figma.com/design/0UAXn1uIaIWTUDnBj1Tzct/Plataforma-de-agendamento--Community---Copy-?node-id=3-376&t=VtaSznonD5mOUePz-1
-- Always consult the Figma frames (desktop + mobile) before implementing. O design tem um único tema dark (não há tema claro).
+- Always consult the Figma frames (desktop + mobile) before implementing. O design original do Figma é somente dark; um tema claro foi adicionado a pedido do usuário, mantendo a mesma paleta (escala de luminosidade invertida e dourado aprofundado).
 - Examine the sidebar, appointment form, period classification (Morning/Afternoon/Night), and the appointments list layout.
 
 ## Design System
@@ -29,20 +29,22 @@ HairDay is a Single Page Application (SPA) for managing appointments at a hair s
 ### Tipografia
 Família **Catamaran** (pesos 400 e 700) em toda a aplicação, carregada via Google Fonts no `index.html`.
 
-### Tokens de cores (tema dark)
-| Token | Valor | Uso |
-|---|---|---|
-| `--bg-primary` | `#19181b` | fundo geral |
-| `--bg-secondary` | `#232225` | card do formulário |
-| `--bg-tertiary` | `#2e2c30` | logo e horários disponíveis |
-| `--border-primary` | `#2e2c30` | bordas dos períodos da agenda |
-| `--border-secondary` | `#3e3c41` | bordas de inputs e horários |
-| `--text-primary` | `#f5f4f5` | títulos |
-| `--text-secondary` | `#b2afb6` | textos e labels |
-| `--text-tertiary` | `#98959d` | textos de apoio |
-| `--accent` | `#b8952e` | destaque dourado |
-| `--accent-hover` | `#dbc170` | hover do destaque |
-| `--accent-contrast` | `#050505` | texto sobre o destaque |
+### Tokens de cores (tema dark e claro)
+| Token | Dark (padrão) | Light | Uso |
+|---|---|---|---|
+| `--bg-primary` | `#19181b` | `#ecebee` | fundo geral |
+| `--bg-secondary` | `#232225` | `#ffffff` | card do formulário |
+| `--bg-tertiary` | `#2e2c30` | `#e9e7ec` | logo, toggle e horários disponíveis |
+| `--border-primary` | `#2e2c30` | `#e9e7ec` | bordas dos períodos da agenda |
+| `--border-secondary` | `#3e3c41` | `#cfccd6` | bordas de inputs e horários |
+| `--text-primary` | `#f5f4f5` | `#19181b` | títulos |
+| `--text-secondary` | `#b2afb6` | `#57545d` | textos e labels |
+| `--text-tertiary` | `#98959d` | `#76737c` | textos de apoio |
+| `--accent` | `#b8952e` | `#7d5f18` | destaque dourado |
+| `--accent-hover` | `#dbc170` | `#94711d` | hover do destaque |
+| `--accent-contrast` | `#050505` | `#ffffff` | texto sobre o destaque |
+
+Os tokens estão em `src/index.css`: `:root` define o tema dark (padrão) e `[data-theme="light"]` sobrescreve com o tema claro. O React alterna via `data-theme` no `<html>` e persiste em `localStorage` (`hairday:theme`).
 
 Regras:
 1. Use as variáveis CSS via `var(--token)` em vez de repetir valores hex nos componentes.
@@ -53,6 +55,7 @@ Regras:
 - Desktop (≥ 1100px): duas colunas — painel do formulário (max 512px) à esquerda e agenda à direita, ocupando a altura da tela com scroll interno.
 - Abaixo de 1100px: as colunas empilham verticalmente (formulário acima, agenda abaixo) com scroll na página.
 - Logo fixo no canto superior esquerdo (caixa `8.7rem × 3.5rem`, canto inferior direito arredondado).
+- Botão de alternância claro/escuro no canto superior direito, espelhando o box do logo (caixa `3.5rem × 3.5rem`, canto inferior esquerdo arredondado).
 - O design **não** tem menu hambúrguer nem links de navegação.
 
 ### Horários de funcionamento
@@ -83,6 +86,16 @@ Grade fixa 09:00–21:00 (13 horários), dividida em Manhã (09h–12h), Tarde (
   - Tarde: 13h às 18h.
   - Noite: 19h às 21h.
 - Exibir uma mensagem quando não houver agendamentos em determinado período.
+
+### 2.1. Alternância de tema claro/escuro
+- Botão de alternância no canto superior direito (aria-label descritivo, acessível por teclado).
+- Persistência no `localStorage` (chave: `hairday:theme`), com valores `light` ou `dark`.
+- Restauração da preferência salva ao carregar a página (script inline no `index.html` evita flash de tema).
+- Sincronização entre tema salvo, tema aplicado (`data-theme` no `<html>`) e ícone do botão.
+- Fallback: preferência do sistema (`prefers-color-scheme`) e, por último, o tema dark (padrão do design).
+- Textos, bordas, superfícies, hovers e destaques se atualizam corretamente nos dois temas.
+- Ícones Phosphor (sun/moon) embutidos como SVG com `fill="currentColor"`.
+- O logo tem uma variante para o tema claro (`logo-light.svg`), pois o original tem partes brancas.
 
 ### 3. Conceitos React e TypeScript
 - Use `useState` for managing appointments state.
@@ -115,7 +128,7 @@ Grade fixa 09:00–21:00 (13 horários), dividida em Manhã (09h–12h), Tarde (
   - Delete appointment functionality
   - Date filter functionality
   - Period classification (Morning/Afternoon/Night)
-  - Theme toggle (if applicable)
+  - Alternância claro/escuro e persistência do tema (confirmadas)
   - Persistence (if localStorage is used)
 - Figma: consult directly; if Figma MCP is available, connect to analyze screens.
 
@@ -139,9 +152,10 @@ Siga o board oficial de 12 passos do projeto:
 src/
 ├── assets/            # SVGs originais do design (logo, calendário, períodos, lixeira…)
 ├── components/        # Sidebar, AppointmentForm, AppointmentCard,
-│                      # AppointmentsList, PeriodFilter, EmptyState
+│                      # AppointmentsList, PeriodFilter, EmptyState, ThemeToggle
 ├── context/           # AppointmentsContext.tsx (Provider + hook useAppointments)
 ├── data/              # openingHours.ts (grade 09h–21h) e initialAppointments.ts
+├── hooks/             # useTheme.ts (tema claro/escuro)
 ├── types/             # types.ts (Appointment, Period, AppointmentFormValues)
 ├── utils.ts           # todayISO, nowHHMM, getPeriodFromTime
 ├── App.tsx
@@ -157,7 +171,7 @@ Regras:
 1. Respeite a estrutura acima.
 2. Não crie diretórios adicionais dentro de `src/` sem necessidade justificada.
 3. Mantenha dados estáticos em `data/`, mídia em `assets/` e tipos em `types/`.
-4. O hook `useAppointments` vive junto do Provider em `context/AppointmentsContext.tsx` (não há diretório `hooks/`).
+4. O hook `useAppointments` vive junto do Provider em `context/AppointmentsContext.tsx`; o hook `useTheme` vive em `hooks/useTheme.ts`.
 
 ### 7. Regras de implementação
 - Criar tipos TypeScript para `Appointment` e Props de componentes.
@@ -187,6 +201,7 @@ Use Playwright para validar a interface no navegador, quando disponível. Verifi
 - Filtro por data exibir apenas agendamentos desse dia.
 - Classificação em períodos Manhã/Tarde/Noite e mensagem de "Nenhum agendamento" quando aplicável.
 - Aplicação correta dos tipos TypeScript.
+- Alternância claro/escuro e persistência do tema após recarregar.
 - Ausência de erros relevantes no console.
 - Ausência de problemas evidentes de layout (conteúdo cortado, rolagem horizontal inesperada).
 

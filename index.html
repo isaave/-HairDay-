@@ -11,6 +11,24 @@
       rel="stylesheet"
     />
     <title>HairDay — Agendamentos</title>
+    <script>
+      // Aplica o tema salvo antes da primeira pintura, evitando flash
+      // de tema errado enquanto o React monta (mesma lógica do useTheme).
+      (function () {
+        try {
+          var saved = localStorage.getItem("hairday:theme");
+          var theme =
+            saved === "light" || saved === "dark"
+              ? saved
+              : window.matchMedia("(prefers-color-scheme: light)").matches
+                ? "light"
+                : "dark";
+          document.documentElement.dataset.theme = theme;
+        } catch (error) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

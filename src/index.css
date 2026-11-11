@@ -4,7 +4,7 @@
   font-family: "Catamaran", sans-serif;
   font-size: 16px;
 
-  /* Design tokens do Figma (HairDay) */
+  /* Tema dark — padrão (tema do design original do Figma) */
   --bg-primary: #19181b; /* fundo geral */
   --bg-secondary: #232225; /* card do formulário */
   --bg-tertiary: #2e2c30; /* logo e horários disponíveis */
@@ -18,6 +18,26 @@
   --accent-contrast: #050505; /* texto sobre o destaque */
 
   color-scheme: dark;
+}
+
+/* Tema claro — ativado via data-theme="light" no <html>.
+   Mesmas famílias de matiz do design, com a escala de
+   luminosidade invertida e o dourado aprofundado para manter
+   o contraste dos textos sobre fundos claros. */
+[data-theme="light"] {
+  --bg-primary: #ecebee; /* fundo geral */
+  --bg-secondary: #ffffff; /* card do formulário */
+  --bg-tertiary: #e9e7ec; /* logo, toggle e horários disponíveis */
+  --border-primary: #e9e7ec; /* bordas dos períodos da agenda */
+  --border-secondary: #cfccd6; /* bordas de inputs e horários */
+  --text-primary: #19181b; /* títulos */
+  --text-secondary: #57545d; /* textos e labels */
+  --text-tertiary: #76737c; /* textos de apoio */
+  --accent: #7d5f18; /* destaque dourado profundo */
+  --accent-hover: #94711d; /* hover do destaque */
+  --accent-contrast: #ffffff; /* texto sobre o destaque */
+
+  color-scheme: light;
 }
 
 body {

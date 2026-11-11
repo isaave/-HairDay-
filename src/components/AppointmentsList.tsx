@@ -70,7 +70,7 @@ export function AppointmentsList() {
         ))}
       </div>
 
-      <footer className="py-4 text-center text-[0.9rem] text-[#b8962e] max-[1099px]:pt-8">
+      <footer className="py-4 text-center text-[0.9rem] text-[var(--accent)] max-[1099px]:pt-8">
         <p>
           Desenvolvido por <strong>Isabella Avelina</strong> · Design HairDay
         </p>

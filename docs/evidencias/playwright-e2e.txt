@@ -22,7 +22,14 @@
   ✓ todos os períodos mostram o estado vazio na data sem agendamentos
   ✓ agendamentos do dia reapareceram ao voltar a data
 
-[5] Console
+[5] Alternância entre tema claro e escuro
+  ✓ tema inicial é dark (preferência do sistema simulada como dark)
+  ✓ tokens de cor aplicados (fundo: rgb(25, 24, 27) -> rgb(236, 235, 238))
+  ✓ logo trocou para a variante clara
+  ✓ tema claro persistiu após recarregar (localStorage)
+  ✓ tema dark salvo no localStorage (chave hairday:theme)
+
+[6] Console
   ✓ nenhum erro de console (0 erros)
 
 E2E concluído: todos os testes passaram.
