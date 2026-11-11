@@ -7,7 +7,7 @@ You are a React frontend developer working on HairDay, a hair salon/barbershop a
 Build a responsive React application based on the Figma reference provided in this project, reproducing the desktop and mobile interfaces for the barbershop/beauty salon appointment scheduler.
 
 ## Project Overview
-HairDay is a Single Page Application (SPA) for managing appointments at a hair salon or barbershop. The app allows users to view, add, filter, and remove appointments, organized by time periods (Morning, Afternoon, Night). It features a responsive sidebar navigation and a main area displaying appointments grouped by time period.
+HairDay is a Single Page Application (SPA) for managing appointments at a hair salon or barbershop. The app allows users to view, add, filter, and remove appointments, organized by time periods (Morning, Afternoon, Night). It features a left panel (`Sidebar`) with the logo and the appointment form, and a main area (agenda) displaying appointments grouped by time period.
 
 ## Tech Stack
 - React (functional components + hooks)
@@ -19,15 +19,51 @@ HairDay is a Single Page Application (SPA) for managing appointments at a hair s
 
 ## Design Reference
 - Figma file: https://www.figma.com/design/0UAXn1uIaIWTUDnBj1Tzct/Plataforma-de-agendamento--Community---Copy-?node-id=3-376&t=VtaSznonD5mOUePz-1
-- Always consult the Figma frames (desktop + mobile, light + dark if available) before implementing.
+- Always consult the Figma frames (desktop + mobile) before implementing. O design tem um único tema dark (não há tema claro).
 - Examine the sidebar, appointment form, period classification (Morning/Afternoon/Night), and the appointments list layout.
+
+## Design System
+
+> Nota: os tokens abaixo foram extraídos do design de referência (incluindo os assets SVG originais) e estão implementados em `src/index.css`. Como o Figma não renderiza via fetch (requer JS), os tokens foram confirmados em implementações públicas fiéis ao mesmo design da comunidade.
+
+### Tipografia
+Família **Catamaran** (pesos 400 e 700) em toda a aplicação, carregada via Google Fonts no `index.html`.
+
+### Tokens de cores (tema dark)
+| Token | Valor | Uso |
+|---|---|---|
+| `--bg-primary` | `#19181b` | fundo geral |
+| `--bg-secondary` | `#232225` | card do formulário |
+| `--bg-tertiary` | `#2e2c30` | logo e horários disponíveis |
+| `--border-primary` | `#2e2c30` | bordas dos períodos da agenda |
+| `--border-secondary` | `#3e3c41` | bordas de inputs e horários |
+| `--text-primary` | `#f5f4f5` | títulos |
+| `--text-secondary` | `#b2afb6` | textos e labels |
+| `--text-tertiary` | `#98959d` | textos de apoio |
+| `--accent` | `#b8952e` | destaque dourado |
+| `--accent-hover` | `#dbc170` | hover do destaque |
+| `--accent-contrast` | `#050505` | texto sobre o destaque |
+
+Regras:
+1. Use as variáveis CSS via `var(--token)` em vez de repetir valores hex nos componentes.
+2. Mantenha os nomes dos tokens consistentes com a tabela acima.
+3. Não invente tokens adicionais sem consultar o design.
+
+### Layout e responsividade
+- Desktop (≥ 1100px): duas colunas — painel do formulário (max 512px) à esquerda e agenda à direita, ocupando a altura da tela com scroll interno.
+- Abaixo de 1100px: as colunas empilham verticalmente (formulário acima, agenda abaixo) com scroll na página.
+- Logo fixo no canto superior esquerdo (caixa `8.7rem × 3.5rem`, canto inferior direito arredondado).
+- O design **não** tem menu hambúrguer nem links de navegação.
+
+### Horários de funcionamento
+Grade fixa 09:00–21:00 (13 horários), dividida em Manhã (09h–12h), Tarde (13h–18h) e Noite (19h–21h). Horários já agendados ou já passados (no dia atual) ficam desabilitados na grade do formulário.
 
 ## Requirements & Features
 
 ### 1. Interface and Componentization
 - Reproduce the Figma layout on desktop and mobile.
 - Create the following reusable components:
-  - `Sidebar` — navigation links (Home, Agenda, etc.)
+  - `Sidebar` — painel lateral esquerdo: logo no canto superior e o formulário de agendamento
   - `AppointmentForm` — form to add new appointments (client name, date, time)
   - `AppointmentCard` — single appointment display with delete button
   - `AppointmentsList` — list of appointments grouped by period
@@ -84,34 +120,44 @@ HairDay is a Single Page Application (SPA) for managing appointments at a hair s
 - Figma: consult directly; if Figma MCP is available, connect to analyze screens.
 
 ### 5. Board de Desenvolvimento (Development Board)
-Follow the board in the Notion enunciado:
-1. **Explorar o Figma** — Analisar frames desktop e mobile, listar elementos, identificar cores, fontes, espaçamentos.
-2. **Criar o projeto React** — `npm create vite@latest hairday -- --template react-ts`, `npm install`, `npm run dev`.
-3. **Estrutura de pastas e componentes** — Criar `src/components/` com Sidebar, AppointmentForm, AppointmentCard, AppointmentsList, PeriodFilter, EmptyState.
-4. **Implementar o gerenciamento de estado** — Context API + useState, tipos TypeScript, formulário validado.
-5. **Implementar filtro e períodos** — Lógica de classificação por manhã/tarde/noite, filtro por data.
-6. **Testes com Playwright** — Validar viewport desktop/mobile, formulário, exclusão, filtro.
-7. **Entregar no GitHub** — Repositório com commits incrementais, README, AGENTS.md, capturas desktop/mobile, evidências de Context7 e Playwright.
+Siga o board oficial de 12 passos do projeto:
+1. **Analisar o Figma** — frames desktop e mobile, elementos, cores, fontes, espaçamentos.
+2. **Criar o projeto React + TypeScript** — Vite (`react-ts`) + Tailwind CSS.
+3. **Configurar o AGENTS.md para HairDay.**
+4. **Consultar Context7 MCP** — documentação de React/TypeScript/Tailwind quando a sintaxe variar entre versões.
+5. **Montar a Sidebar e o formulário** — painel esquerdo com logo e campos data/horário/cliente.
+6. **Montar a agenda por períodos** — Manhã, Tarde e Noite.
+7. **Criar tipo `Appointment` e estado React** — Context API + `useState`.
+8. **Adicionar agendamentos pelo formulário.**
+9. **Filtrar por dia e agrupar horários** — `filter()` + `reduce()`.
+10. **Excluir agendamentos** — botão de lixeira.
+11. **Revisar Figma e testar Playwright.**
+12. **Documentar, versionar e entregar.**
 
 ### 6. Estrutura de pastas obrigatória
 ```text
 src/
-├── assets/            # imagens, ícones
-├── components/
-│   ├── Sidebar.tsx
-│   ├── AppointmentForm.tsx
-│   ├── AppointmentCard.tsx
-│   ├── AppointmentsList.tsx
-│   ├── PeriodFilter.tsx
-│   └── EmptyState.tsx
-├── context/           # AppointmentContext.tsx (Provider + useAppointments hook)
-├── data/              # mock data ou inicial state
-├── hooks/             # useAppointments.ts (opcional)
-├── types/             # types.ts (Appointment interface)
-└── App.tsx
-           index.tsx
-           main.tsx
+├── assets/            # SVGs originais do design (logo, calendário, períodos, lixeira…)
+├── components/        # Sidebar, AppointmentForm, AppointmentCard,
+│                      # AppointmentsList, PeriodFilter, EmptyState
+├── context/           # AppointmentsContext.tsx (Provider + hook useAppointments)
+├── data/              # openingHours.ts (grade 09h–21h) e initialAppointments.ts
+├── types/             # types.ts (Appointment, Period, AppointmentFormValues)
+├── utils.ts           # todayISO, nowHHMM, getPeriodFromTime
+├── App.tsx
+├── index.css          # Tailwind + design tokens
+└── main.tsx
+
+scripts/               # screenshot.mjs e e2e.mjs (Playwright como biblioteca)
+screenshots/           # desktop.png e mobile.png
+docs/evidencias/       # logs de execução dos testes
 ```
+
+Regras:
+1. Respeite a estrutura acima.
+2. Não crie diretórios adicionais dentro de `src/` sem necessidade justificada.
+3. Mantenha dados estáticos em `data/`, mídia em `assets/` e tipos em `types/`.
+4. O hook `useAppointments` vive junto do Provider em `context/AppointmentsContext.tsx` (não há diretório `hooks/`).
 
 ### 7. Regras de implementação
 - Criar tipos TypeScript para `Appointment` e Props de componentes.
@@ -126,7 +172,7 @@ src/
 - O botão de excluir deve remover o appointment do estado e atualizar a interface imediatamente.
 - O filtro por data deve atualizar a lista exibida sem recarregar a página.
 - HTML semântico e acessibilidade (labels, alt texts, estados de foco).
-- Responsividade: sidebar se transforma em um menu hambúrguer em mobile; layout se ajusta a < 768px.
+- Responsividade: duas colunas no desktop (≥1100px); abaixo disso, o formulário e a agenda empilham verticalmente (o design não tem menu hambúrguer).
 - Não adicionar bibliotecas de data picker sem necessidade; usar input type="date" nativo ou estilizar simples inputs.
 
 ### 8. Ferramentas
