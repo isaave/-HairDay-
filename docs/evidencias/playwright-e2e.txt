@@ -1,0 +1,28 @@
+
+> hairday@0.0.0 test:e2e
+> node scripts/e2e.mjs
+
+
+[1] Renderização inicial
+  ✓ título da página correto
+  ✓ três períodos renderizados (Manhã, Tarde, Noite)
+  ✓ grade com 13 horários de funcionamento
+
+[2] Cadastro de agendamento pelo formulário
+  ✓ agendamento "Cliente Playwright" apareceu na agenda imediatamente (09:00)
+  ✓ formulário foi resetado após o cadastro
+  ✓ card está na seção: Agendamentos da Manhã
+  ✓ horário 09:00 ficou indisponível na grade
+
+[3] Exclusão pela lixeira
+  ✓ agendamento removido da agenda após clicar na lixeira
+  ✓ horário 09:00 voltou a ficar disponível
+
+[4] Filtro por data
+  ✓ todos os períodos mostram o estado vazio na data sem agendamentos
+  ✓ agendamentos do dia reapareceram ao voltar a data
+
+[5] Console
+  ✓ nenhum erro de console (0 erros)
+
+E2E concluído: todos os testes passaram.
